@@ -32,7 +32,7 @@ std::vector<char> encoder(std::string input_str, int len_str)
     std::vector<char> res_str;
 	
 	int idx, bits = 0, padding = 0;
-    int group = 0, state = 0, temp;
+    int group = 0, state = 0, val;
 	int i, j, k = 0;
 	len_str -= 1;
 
@@ -52,21 +52,19 @@ std::vector<char> encoder(std::string input_str, int len_str)
 
 			while (bits != 0)
 			{
-				if (bits >= 6)
-				{								
-					idx = (group >> temp) & 63;
-                    temp = bits - 6;
-					bits -= 6;		
+				if (bits < 6)
+				{
+                    idx = (group << val) & 63;
+                    val = 6 - bits;
+					bits = 0;		
 				}
 				else
 				{
-									
-					idx = (group << temp) & 63;
-                    temp = 6 - bits;
-					bits = 0;
+					idx = (group >> val) & 63;
+                    val = bits - 6;
+					bits -= 6;									
 				}
 
-			//	res_str[k++] = base64_chars[idx];
                 res_str.push_back(base64_chars[idx]);
 			}
 	}
